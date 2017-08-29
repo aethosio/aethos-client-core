@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const project = require('./aurelia_project/aurelia.json');
 const { AureliaPlugin, ModuleDependenciesPlugin } = require('aurelia-webpack-plugin');
-const { optimize: { CommonsChunkPlugin }, ProvidePlugin } = require('webpack');
+const { optimize: { CommonsChunkPlugin }, ProvidePlugin, DllPlugin } = require('webpack');
 
 // config helpers:
 const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || [];
@@ -18,6 +18,8 @@ const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/';
 
+console.log(outDir);
+
 const cssRules = [
   { loader: 'css-loader' },
 ];
@@ -28,8 +30,12 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     modules: [srcDir, 'node_modules'],
   },
   entry: {
-    app: ['aurelia-bootstrapper'],
-    vendor: ['bluebird'],
+    // app: ['aurelia-bootstrapper'],
+    vendor: [
+      'bluebird',
+      "aurelia-bootstrapper",
+      "aurelia-router",
+    ],
   },
   output: {
     path: outDir,
@@ -89,6 +95,10 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     ]
   },
   plugins: [
+    new DllPlugin({
+      path: path.resolve("dist", "[name]-manifest.json"),
+      name: "[name]_[hash]",
+    }),    
     new AureliaPlugin(),
     new ProvidePlugin({
       'Promise': 'bluebird'
@@ -119,9 +129,9 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
       filename: production ? '[contenthash].css' : '[id].css',
       allChunks: true
     })),
-    ...when(production, new CommonsChunkPlugin({
-      name: ['common']
-    })),
+    // ...when(production, new CommonsChunkPlugin({
+    //   name: ['common']
+    // })),
     ...when(production, new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' }
     ]))
