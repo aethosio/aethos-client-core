@@ -33,8 +33,14 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     // app: ['aurelia-bootstrapper'],
     vendor: [
       'bluebird',
-      "aurelia-bootstrapper",
-      "aurelia-router",
+      'aurelia-bootstrapper',
+      'aurelia-router',
+      'aurelia-event-aggregator',
+      'aurelia-history-browser',
+      'aurelia-logging-console',
+      'aurelia-pal-browser',
+      'aurelia-templating-binding',
+      'aurelia-templating-resources',
     ],
   },
   output: {
@@ -98,7 +104,7 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     new DllPlugin({
       path: path.resolve("dist", "[name]-manifest.json"),
       name: "[name]_[hash]",
-    }),    
+    }),
     new AureliaPlugin(),
     new ProvidePlugin({
       'Promise': 'bluebird'
