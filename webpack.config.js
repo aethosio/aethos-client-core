@@ -33,11 +33,6 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => ({
     // app: ['aurelia-bootstrapper'],
     vendor: [
       'bluebird',
-<<<<<<< HEAD
-      "aurelia-bootstrapper",
-      "aurelia-router",
-      "aethos-spaces"
-=======
       'aurelia-bootstrapper',
       'aurelia-router',
       'aurelia-event-aggregator',
@@ -46,21 +41,15 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => ({
       'aurelia-pal-browser',
       'aurelia-templating-binding',
       'aurelia-templating-resources',
->>>>>>> 57bc7588ce158692d04cd7d604cd10c24c83ffa8
+      "aethos-spaces"
     ],
   },
   output: {
     path: outDir,
     publicPath: baseUrl,
-<<<<<<< HEAD
     filename: production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
     sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
     chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
-=======
-    filename: '[name].[hash].bundle.js',
-    sourceMapFilename: '[name].bundle.map',
-    chunkFilename: '[name].chunk.js',
->>>>>>> 57bc7588ce158692d04cd7d604cd10c24c83ffa8
     library: "[name]_[hash]",
   },
   devServer: {
