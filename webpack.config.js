@@ -24,7 +24,7 @@ const cssRules = [
   { loader: 'css-loader' },
 ];
 
-module.exports = ({production, server, extractCss, coverage} = {}) => ({
+module.exports = ({ production, server, extractCss, coverage } = {}) => ({
   resolve: {
     extensions: ['.js'],
     modules: [srcDir, 'node_modules'],
@@ -35,6 +35,7 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
       'bluebird',
       "aurelia-bootstrapper",
       "aurelia-router",
+      "aethos-spaces"
     ],
   },
   output: {
@@ -42,14 +43,16 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     publicPath: baseUrl,
     filename: production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
     sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
-    chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js'
+    chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
+    library: "[name]_[hash]",
   },
   devServer: {
     contentBase: outDir,
     // serve index.html for all 404 (required for push-state)
     historyApiFallback: true
   },
-  devtool: production ? 'nosources-source-map' : 'cheap-module-eval-source-map',
+  // devtool: production ? 'nosources-source-map' : 'cheap-module-eval-source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       // CSS required in JS/TS files should use the style-loader that auto-injects it into the website
@@ -80,8 +83,11 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
         issuer: /\.html?$/i
       },
       { test: /\.html$/i, loader: 'html-loader' },
-      { test: /\.js$/i, loader: 'babel-loader', exclude: nodeModulesDir,
-        options: coverage ? { sourceMap: 'inline', plugins: [ 'istanbul' ] } : {},
+      {
+        test: /\.js$/i,
+        loader: 'babel-loader',
+        exclude: nodeModulesDir,
+        options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {},
       },
       { test: /\.json$/i, loader: 'json-loader' },
       // use Bluebird as the global Promise implementation:
@@ -98,13 +104,13 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
     new DllPlugin({
       path: path.resolve("dist", "[name]-manifest.json"),
       name: "[name]_[hash]",
-    }),    
+    }),
     new AureliaPlugin(),
     new ProvidePlugin({
       'Promise': 'bluebird'
     }),
     new ModuleDependenciesPlugin({
-      'aurelia-testing': [ './compile-spy', './view-spy' ]
+      'aurelia-testing': ['./compile-spy', './view-spy']
     }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
@@ -122,7 +128,9 @@ module.exports = ({production, server, extractCss, coverage} = {}) => ({
       } : undefined,
       metadata: {
         // available in index.ejs //
-        title, server, baseUrl
+        title,
+        server,
+        baseUrl
       }
     }),
     ...when(extractCss, new ExtractTextPlugin({
